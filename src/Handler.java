@@ -27,14 +27,15 @@ class Handler implements Runnable {
                 BufferedReader inFromClient = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
                 String clientSentence = inFromClient.readLine();
 
-                //String[] arguments = clientSentence.split(" "); // split user input on every space
+                String[] arguments = clientSentence.split(" "); // split user input on every space
 
-                //if(arguments.length != 4){
+                if(arguments[0].equals("GET")){
+
+                }
+
                     outToClient.writeBytes("HTTP/1.1 200 OK\n" +
                             "Date: Sun, 10 Oct 2010 23:26:07 GMT\n" +
-                            "Server: Apache/2.2.8 (Ubuntu) mod_ssl/2.2.8 OpenSSL/0.9.8g\n" +
-                            "Last-Modified: Sun, 26 Sep 2010 22:04:35 GMT\n" +
-                            "ETag: \"45b6-834-49130cc1182c0\"\n" +
+                            "Server: Matko's laptop\n" +
                             "Accept-Ranges: bytes\n" +
                             "Content-Length: 12\n" +
                             "Connection: close\n" +
