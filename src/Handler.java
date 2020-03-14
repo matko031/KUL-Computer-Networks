@@ -17,7 +17,7 @@ class Handler implements Runnable {
     @Override
     public void run() {
 
-        List<String> HTTPcommands = new ArrayList<String>(Arrays.asList("GET", "POST", "PUT", "DELETE")); // define all supported http commands
+        List<String> HTTPcommands = new ArrayList<String>(Arrays.asList("GET", "POST", "PUT", "HEAD")); // define all supported http commands
 
 
         while (true) {
@@ -37,11 +37,11 @@ class Handler implements Runnable {
                             "Date: Sun, 10 Oct 2010 23:26:07 GMT\n" +
                             "Server: Matko's laptop\n" +
                             "Accept-Ranges: bytes\n" +
-                            "Content-Length: 12\n" +
+                            "Content-Length: 18\n" +
                             "Connection: close\n" +
                             "Content-Type: text/html\n" +
                             "\n" +
-                            "Hello world!\n");
+                            "Hello world en nog wat random tekst!\n");
                 //}
             }
             catch (IOException e) {
