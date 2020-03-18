@@ -2,13 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f1f8f214-f8fa-4520-9539-8cd1e180b172" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/websites/localhost/localhost.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assignement1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Assignement1.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Assignement1/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignement1/Client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Assignement1/Handler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignement1/Handler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Assignement1/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignement1/main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/websites/google/google.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/Content%20Overview/btn_contentovervup.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/readup.png" beforeDir="false" afterPath="$PROJECT_DIR$/websites/tcpipguide/images/readup.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/tcpipguide.html" beforeDir="false" afterPath="$PROJECT_DIR$/websites/tcpipguide/tcpipguide.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,13 +30,16 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1YkZKryJx4FBCjw5qWEt4pP5mMU" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="Downloaded.Files.Path.Enabled" value="false" />
     <property name="Repository.Attach.Annotations" value="true" />
     <property name="Repository.Attach.JavaDocs" value="true" />
@@ -98,10 +105,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.main" />
-        <item itemvalue="Java Scratch.Scratch" />
         <item itemvalue="Application.Server" />
-        <item itemvalue="Application.test" />
+        <item itemvalue="Java Scratch.Scratch" />
         <item itemvalue="Application.Client" />
+        <item itemvalue="Application.test" />
       </list>
     </recent_temporary>
   </component>
@@ -127,12 +134,22 @@
       <workItem from="1584039353623" duration="5149000" />
       <workItem from="1584045207787" duration="93000" />
       <workItem from="1584045728297" duration="1731000" />
-      <workItem from="1584181877902" duration="15946000" />
+      <workItem from="1584181877902" duration="21013000" />
+      <workItem from="1584292173092" duration="9813000" />
+      <workItem from="1584372719343" duration="232000" />
+      <workItem from="1584373923175" duration="15000" />
+      <workItem from="1584374911115" duration="6829000" />
+      <workItem from="1584478355670" duration="1201000" />
+      <workItem from="1584557861989" duration="9779000" />
+      <workItem from="1584572807215" duration="34000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="519" y="191" key="#Project_Structure" timestamp="1583490389387">
@@ -151,50 +168,50 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="702" y="215" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1584045755599" />
-    <state width="1870" height="298" key="GridCell.Tab.0.bottom" timestamp="1584198947557">
+    <state width="1870" height="245" key="GridCell.Tab.0.bottom" timestamp="1584572763959">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1584198947557" />
-    <state width="1870" height="298" key="GridCell.Tab.0.center" timestamp="1584198947557">
+    <state width="1870" height="245" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1584572763959" />
+    <state width="1870" height="245" key="GridCell.Tab.0.center" timestamp="1584572763959">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1584198947557" />
-    <state width="1870" height="298" key="GridCell.Tab.0.left" timestamp="1584198947556">
+    <state width="1870" height="245" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1584572763959" />
+    <state width="1870" height="245" key="GridCell.Tab.0.left" timestamp="1584572763959">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1584198947556" />
-    <state width="1870" height="298" key="GridCell.Tab.0.right" timestamp="1584198947557">
+    <state width="1870" height="245" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1584572763959" />
+    <state width="1870" height="245" key="GridCell.Tab.0.right" timestamp="1584572763959">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1584198947557" />
-    <state width="1870" height="298" key="GridCell.Tab.1.bottom" timestamp="1584198947558">
+    <state width="1870" height="245" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1584572763959" />
+    <state width="1870" height="298" key="GridCell.Tab.1.bottom" timestamp="1584572712769">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.1.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1584198947558" />
-    <state width="1870" height="298" key="GridCell.Tab.1.center" timestamp="1584198947557">
+    <state width="1870" height="298" key="GridCell.Tab.1.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1584572712769" />
+    <state width="1870" height="298" key="GridCell.Tab.1.center" timestamp="1584572712768">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.1.center/0.0.1920.1080@0.0.1920.1080" timestamp="1584198947557" />
-    <state width="1870" height="298" key="GridCell.Tab.1.left" timestamp="1584198947557">
+    <state width="1870" height="298" key="GridCell.Tab.1.center/0.0.1920.1080@0.0.1920.1080" timestamp="1584572712768" />
+    <state width="1870" height="298" key="GridCell.Tab.1.left" timestamp="1584572712767">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.1.left/0.0.1920.1080@0.0.1920.1080" timestamp="1584198947557" />
-    <state width="1870" height="298" key="GridCell.Tab.1.right" timestamp="1584198947558">
+    <state width="1870" height="298" key="GridCell.Tab.1.left/0.0.1920.1080@0.0.1920.1080" timestamp="1584572712767" />
+    <state width="1870" height="298" key="GridCell.Tab.1.right" timestamp="1584572712768">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.1.right/0.0.1920.1080@0.0.1920.1080" timestamp="1584198947558" />
+    <state width="1870" height="298" key="GridCell.Tab.1.right/0.0.1920.1080@0.0.1920.1080" timestamp="1584572712768" />
     <state x="409" y="68" key="SettingsEditor" timestamp="1584041954248">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="409" y="68" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1584041954248" />
-    <state width="1085" height="528" key="XDebugger.FullValuePopup" timestamp="1584198800918">
+    <state width="1085" height="528" key="XDebugger.FullValuePopup" timestamp="1584207965333">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1085" height="528" key="XDebugger.FullValuePopup/0.0.1920.1080@0.0.1920.1080" timestamp="1584198800918" />
-    <state x="544" y="69" key="com.intellij.ide.util.TipDialog" timestamp="1584181887528">
+    <state width="1085" height="528" key="XDebugger.FullValuePopup/0.0.1920.1080@0.0.1920.1080" timestamp="1584207965333" />
+    <state x="562" y="285" key="com.intellij.ide.util.TipDialog" timestamp="1584572813205">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="544" y="69" key="com.intellij.ide.util.TipDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1584181887528" />
+    <state x="562" y="285" key="com.intellij.ide.util.TipDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1584572813205" />
     <state x="527" y="397" width="851" height="230" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1584190341203">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
@@ -203,23 +220,23 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="676" y="448" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1080@0.0.1920.1080" timestamp="1584006069537" />
-    <state x="603" y="258" width="711" height="678" key="search.everywhere.popup" timestamp="1584191896688">
+    <state x="603" y="258" width="711" height="678" key="search.everywhere.popup" timestamp="1584297730658">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="603" y="258" width="711" height="678" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1584191896688" />
+    <state x="603" y="258" width="711" height="678" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1584297730658" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Client.java</url>
-          <line>359</line>
-          <option name="timeStamp" value="52" />
+          <url>file://$PROJECT_DIR$/src/main.java</url>
+          <line>8</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Client.java</url>
-          <line>358</line>
-          <option name="timeStamp" value="53" />
+          <line>236</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

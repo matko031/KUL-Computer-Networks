@@ -16,7 +16,7 @@ class Client  {
 
     private static List<String> HTTPCommands = new ArrayList<String>(Arrays.asList("GET", "POST", "PUT", "HEAD")); // define all supported http commands;
 
-    private static String URIPatternString = "^(https?:\\/\\/)?(((www)\\.)?((.*?)\\.)+?(.+?))(\\/.*)?$"; // regex to test if the URI is valid, not 100% waterproof
+    private static String URIPatternString = "^(https?://)?((((www)\\.)?((.*?)\\.)+?(.+?))|localhost)(/.*)?$"; // regex to test if the URI is valid, not 100% waterproof
     private static Pattern URIPatternRegex = Pattern.compile(URIPatternString); // compile regex
 
     private static String imgPatternString = "(<img.+?src\\s*?=\\s*?\")(.+?)(\")"; // regex to find all the img tags in the html file
@@ -43,12 +43,12 @@ class Client  {
     private byte[] buffer = new byte[0]; // buffer used to save the incoming body bytes
     private int bytesToRead = 0; // number of bytes to read specified in the response
     public boolean argumentsCorrect = true; // specifies if all the arguments given by the user are correct
+    private String userBody;
 
 
     public void Client() {
 
     }
-
 
 
     /*
@@ -69,7 +69,7 @@ class Client  {
         }
 
         Matcher uriMatcher = URIPatternRegex.matcher(arguments[1]);  // create a matcher that will match the given URI against the pattern
-        if(! uriMatcher.matches()){
+        if( ! uriMatcher.matches() && ! arguments[1].equals("localhost")){
             System.out.println("Unsupported URI"); // checks if the URI matches the expected URI pattern
             return false;
         }
@@ -90,12 +90,19 @@ class Client  {
     Prompts the user for the argument and returns them as a list of strings
      */
     public String[] readArguments(){
-        Scanner myObj = new Scanner(System.in); // create scanner object
-        String command = myObj.nextLine();  // read user input
+        Scanner scanner = new Scanner(System.in); // create scanner object
+        String command = scanner.nextLine();  // read user input
+        scanner.close();
         //String command = "GET www.google.com 80 en"; // used for debugging in order not to have to type the URI every time
         return command.split("\\s+"); // split user input on every space and return the array
     }
 
+    private String readUserBody(){
+        Scanner scanner = new Scanner(System.in); // create scanner object
+        String body = scanner.nextLine();  // read user input
+        scanner.close();
+        return body;
+    }
 
     /*
     Reads the arguments, checks them and saves them in their respective variables
@@ -109,8 +116,8 @@ class Client  {
             uriMatcher.find(); // apply the Matcher to the URI and extract the host and file path groups
             // save found groups in their respective variables
             this.host = uriMatcher.group(2);
-            this.path = uriMatcher.group(8) == null ? "/" : uriMatcher.group(6);
-            this.htmlFilename = uriMatcher.group(6);
+            this.path = uriMatcher.group(9) == null ? "/" : uriMatcher.group(6);
+            this.htmlFilename = uriMatcher.group(7) == null ? "localhost" : uriMatcher.group(7);
 
             this.port = arguments.length > 2 ? arguments[2] : "80"; // if port is given save it to its respective variable
             this.lang = arguments.length > 3 ? arguments[3] : "en"; // same for language
@@ -118,6 +125,11 @@ class Client  {
             this.htmlFileRelativePath = "websites" + File.separator + htmlFilename + File.separator + htmlFilename + ".html"; // location of the html file
             createFile(htmlFileRelativePath);
             this.bw = new BufferedWriter(new FileWriter(htmlFileRelativePath));
+
+            userBody="";
+            if (HTTPCommand.equals("POST") || HTTPCommand.equals("PUT")){
+                userBody = readUserBody();
+            }
         }
 
         else {
@@ -130,7 +142,6 @@ class Client  {
     Creates a file at the given location together with all the parent dirs needed
      */
     private boolean createFile(String filePath) throws IOException{
-        boolean made_file;
         File f = new File(filePath); // creates a file object with the given path
         if (f.getParentFile() != null) { // checks if there is parent folder given in the filePath, e.g., 'foo/bar.png' would return true and 'bar.png' would not
              f.getParentFile().mkdirs(); // creates the parent dirs
@@ -152,51 +163,26 @@ class Client  {
 
 
     /*
-    Sends the given command to the server in the form of HTTP request.
-    Only used for GET and HEAD requests
-     */
-    public void sendGETHEADRequest() throws IOException{
-
-
-        // construct the header strings and save them in an array
-        String header1 = this.HTTPCommand + " " + this.path + " HTTP/1.1";
-        String header2 = "host: " + this.host;
-        String[] outputs =  new String[]{header1, header2};
-
-        // loop over the header strings, write them to server and add newline at the end
-        for (String output : outputs) {
-            this.outToServer.writeBytes(output);
-            this.outToServer.writeBytes("\r\n");
-        }
-        this.outToServer.writeBytes("\r\n"); // write the final newline to indicate the end of the request
-
-    }
-
-
-    /*
    Sends the given command to the server in the form of HTTP request.
    Only used for POST and PUT requests
     */
-    public void sendPOSTPUTRequest () throws IOException
+    public void sendRequest () throws IOException
     {
-    //TODO: implement this
-    }
 
+        String headers1 = this.HTTPCommand + " " + this.path + " HTTP/1.1\r\n" +
+                "host:  " + this.host + "\r\n\" ";
+        String headers2 = "";
 
-    /*
-    Sends the correct command to the server
-     */
-    public void sendCommand() {
-        try {
-            if (this.HTTPCommand.equals("GET") || this.HTTPCommand.equals("HEAD")) {
-                this.sendGETHEADRequest();
-            } else if (this.HTTPCommand.equals("POST") || this.HTTPCommand.equals("PUT")) {
-                this.sendPOSTPUTRequest();
-            }
+        if (HTTPCommand.equals("POST") || HTTPCommand.equals("PUT")) {
+            System.out.println("Put your post body underneath:");
+            Scanner scanner = new Scanner(System.in); // create scanner object
+            String body = scanner.nextLine();  // read user input
+            int bodySize = body.getBytes().length;
+            headers2 = "Content-Length: " + bodySize + "\r\n" +
+                    "\r\n";
         }
-        catch (IOException e){
-            System.out.println(e);
-        }
+        this.outToServer.writeBytes(headers1 + headers2 + userBody);
+
     }
 
 
@@ -260,7 +246,6 @@ class Client  {
                     String bytes = line.split(" ")[1];
                     this.bytesToRead = Integer.parseInt(bytes.substring(0, bytes.length()-2)); //convert the string specifying number of bytes to integer, drop the last two chars which are \r\n
                     this.buffer = new byte[this.bytesToRead]; // immediately make the buffer array since the number of bytes is already specified
-
                 }
             }
 
@@ -272,7 +257,6 @@ class Client  {
                     this.contentType = "img";
                 }
             }
-
 
             if (line.equals("\r\n")) { // \r\n line indicated the end of headers and we break the loop
                 break;
@@ -338,10 +322,11 @@ class Client  {
         String strLine;
         String fileText = "";
         while ( (strLine = reader.readLine()) != null){ // while there is something to read, read new line from the file
-            fileText += strLine;
+            fileText += strLine + "\r\n";
         }
         return fileText; // return the string with content
     }
+
 
     /*
     Parse the html file, download all the images and change their src attribute in the html file to the local path of the downloaded image
@@ -353,20 +338,25 @@ class Client  {
         StringBuffer sb = new StringBuffer(); // string buffer which will contain the html file with the modified img src attributes
 
         String htmlFileText = readFile(htmlFileRelativePath);
+        System.out.print(htmlFileText);
         Matcher imgMatcher = imgPatternRegex.matcher(htmlFileText);  // create a matcher that will match the given URI against the pattern
         // apply the Matcher to the URI and extract the host and file path groups
         while(imgMatcher.find()){ // loop through all img tags in the html file
             path = imgMatcher.group(2); // extract the path to the img from the img tag
             path = String.valueOf(path.charAt(0)).equals("/") ? path : "/" + path;
-            imgMatcher.appendReplacement(sb, "$1" + websiteDir + File.separator + htmlFilename + path + "$3"); // add the absolute path of the local website dir to the src attribute
+            String cleanPath = path.replaceAll("%20", ""); // cleanPath is the path without spaces
+
             this.HTTPCommand = "GET";
-            String imgFilePath = websiteDir + File.separator + htmlFilename + path; // absolute path of the image
+            String imgFilePath = websiteDir + File.separator + htmlFilename + cleanPath; // absolute path of the image
             createFile(imgFilePath); // create the image file
             this.ibw = new BufferedOutputStream(new FileOutputStream(imgFilePath)); // create a BufferedOutputStream to the newly created img file
 
-            sendGETHEADRequest(); // send the GET request to download the image
+            sendRequest(); // send the GET request to download the image
             readHeaders(); // read the response headers
             readBody(); // read the body, a.k.a. download the actual image bytes
+
+            imgMatcher.appendReplacement(sb, "$1" + websiteDir + File.separator + htmlFilename + cleanPath + "$3"); // add the absolute path of the local website dir to the src attribute
+
         }
         imgMatcher.appendTail(sb); // add the remainder of the html file to the StringBuffer
 

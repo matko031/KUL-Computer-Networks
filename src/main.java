@@ -5,7 +5,7 @@ public class main {
             clientSocket.setArguments();
             if (clientSocket.argumentsCorrect) {
                 clientSocket.connectSocket();
-                clientSocket.sendCommand();
+                clientSocket.sendRequest();
                 clientSocket.readHeaders();
                 clientSocket.readBody();
                 clientSocket.getImgs();
