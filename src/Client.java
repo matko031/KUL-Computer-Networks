@@ -1,14 +1,11 @@
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.crypto.Data;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 import java.net.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.List;
-import java.util.Arrays;
 import java.lang.*;
 import java.nio.file.Paths;
 
@@ -35,21 +32,23 @@ class Client  {
     private String host; //  host typed by the user
     private String port; // port typed by the user, default value of 80
     private String path; // path to the file specified by the user
-    private String htmlFilename; // part of the host after www, used to create the html file, e.g., www.google.com will be saved in google.html
-    private String htmlFileRelativePath; // path of the htmlFile
+    private String hostDir;
+    private String incomingFilePath;
     private String lang; // language specified by the user, default en
     private String encoding = ""; // encoding specified in the http response headers
     private String contentType = ""; // content type specified in the response headers
     private byte[] buffer = new byte[0]; // buffer used to save the incoming body bytes
     private int bytesToRead = 0; // number of bytes to read specified in the response
     public boolean argumentsCorrect = true; // specifies if all the arguments given by the user are correct
-    private String userBody;
+    String websiteDir = "websites";
+
 
 
     public void Client() {
 
     }
 
+    /************************** UTILITIES **************************/
 
     /*
     Takes in the list of arguments and check if they are all valid
@@ -85,106 +84,24 @@ class Client  {
         return true;
     }
 
-
     /*
     Prompts the user for the argument and returns them as a list of strings
      */
     public String[] readArguments(){
         Scanner scanner = new Scanner(System.in); // create scanner object
         String command = scanner.nextLine();  // read user input
-        scanner.close();
+        //scanner.close();
         //String command = "GET www.google.com 80 en"; // used for debugging in order not to have to type the URI every time
         return command.split("\\s+"); // split user input on every space and return the array
     }
-
-    private String readUserBody(){
+/*
+    TODO put the description here
+     */
+    private String getUserBody() {
+        System.out.println("Put your post body underneath:");
         Scanner scanner = new Scanner(System.in); // create scanner object
-        String body = scanner.nextLine();  // read user input
-        scanner.close();
-        return body;
+        return scanner.nextLine();  // read user input
     }
-
-    /*
-    Reads the arguments, checks them and saves them in their respective variables
-     */
-    public void setArguments() throws IOException{
-        String[] arguments = readArguments();
-        if (this.checkArguments(arguments)) {
-            this.HTTPCommand = arguments[0];
-
-            Matcher uriMatcher = URIPatternRegex.matcher(arguments[1]);  // create a matcher that will match the given URI against the pattern
-            uriMatcher.find(); // apply the Matcher to the URI and extract the host and file path groups
-            // save found groups in their respective variables
-            this.host = uriMatcher.group(2);
-            this.path = uriMatcher.group(9) == null ? "/" : uriMatcher.group(6);
-            this.htmlFilename = uriMatcher.group(7) == null ? "localhost" : uriMatcher.group(7);
-
-            this.port = arguments.length > 2 ? arguments[2] : "80"; // if port is given save it to its respective variable
-            this.lang = arguments.length > 3 ? arguments[3] : "en"; // same for language
-
-            this.htmlFileRelativePath = "websites" + File.separator + htmlFilename + File.separator + htmlFilename + ".html"; // location of the html file
-            createFile(htmlFileRelativePath);
-            this.bw = new BufferedWriter(new FileWriter(htmlFileRelativePath));
-
-            userBody="";
-            if (HTTPCommand.equals("POST") || HTTPCommand.equals("PUT")){
-                userBody = readUserBody();
-            }
-        }
-
-        else {
-            this.argumentsCorrect = false;
-        }
-    }
-
-
-    /*
-    Creates a file at the given location together with all the parent dirs needed
-     */
-    private boolean createFile(String filePath) throws IOException{
-        File f = new File(filePath); // creates a file object with the given path
-        if (f.getParentFile() != null) { // checks if there is parent folder given in the filePath, e.g., 'foo/bar.png' would return true and 'bar.png' would not
-             f.getParentFile().mkdirs(); // creates the parent dirs
-        }
-        return f.createNewFile(); // creates the file at the filePath location and returns whether or not it succeeded in doing so
-    }
-
-
-    /*
-    Creates a socket object and connects with the host on the given port, both saved in the attributes of this object
-     */
-    public void connectSocket() throws IOException {
-
-        this.clientSocket = new Socket(this.host, Integer.parseInt(this.port)); // open a socket with the host
-        this.outToServer = new DataOutputStream(clientSocket.getOutputStream()); // initialize output stream object
-        this.bytesFromServer = new BufferedInputStream(clientSocket.getInputStream()); // initialize input stream object
-
-    }
-
-
-    /*
-   Sends the given command to the server in the form of HTTP request.
-   Only used for POST and PUT requests
-    */
-    public void sendRequest () throws IOException
-    {
-
-        String headers1 = this.HTTPCommand + " " + this.path + " HTTP/1.1\r\n" +
-                "host:  " + this.host + "\r\n\" ";
-        String headers2 = "";
-
-        if (HTTPCommand.equals("POST") || HTTPCommand.equals("PUT")) {
-            System.out.println("Put your post body underneath:");
-            Scanner scanner = new Scanner(System.in); // create scanner object
-            String body = scanner.nextLine();  // read user input
-            int bodySize = body.getBytes().length;
-            headers2 = "Content-Length: " + bodySize + "\r\n" +
-                    "\r\n";
-        }
-        this.outToServer.writeBytes(headers1 + headers2 + userBody);
-
-    }
-
 
     /*
     Reads one line from the buffered reader. Implemented in spite of readline() method already existing
@@ -205,7 +122,6 @@ class Client  {
         return line;
     }
 
-
     /*
     Read specified number of bytes from the given BufferedInputStream, save them in a byte array and return it
      */
@@ -222,46 +138,131 @@ class Client  {
         return buffer;
     }
 
+    /*
+    Creates a file at the given location together with all the parent dirs needed
+     */
+    private void createFile(String filePath) throws IOException{
+        File f = new File(filePath); // creates a file object with the given path
+        if (f.getParentFile() != null) { // checks if there is parent folder given in the filePath, e.g., 'foo/bar.png' would return true and 'bar.png' would not
+            f.getParentFile().mkdirs(); // creates the parent dirs
+        }
+        f.createNewFile(); // creates the file at the filePath location and returns whether or not it succeeded in doing so
+    }
+
+    /*
+        Read the the given file and return the string with the content
+         */
+    public String readFile(String fileName) throws IOException{
+        BufferedReader reader = new BufferedReader(new InputStreamReader( new FileInputStream(fileName))); // encapsulate the FileInputStream with a BufferedReader
+        String strLine;
+        String fileText = "";
+        while ( (strLine = reader.readLine()) != null){ // while there is something to read, read new line from the file
+            fileText += strLine + "\r\n";
+        }
+        return fileText; // return the string with content
+    }
+
+
+
+    /************************** REAL STUFF **************************/
+
+
+    /*
+    Reads the arguments, checks them and saves them in their respective variables
+     */
+    public void setArguments() throws IOException{
+        String[] arguments = readArguments();
+        if (this.checkArguments(arguments)) {
+            this.HTTPCommand = arguments[0];
+
+            Matcher uriMatcher = URIPatternRegex.matcher(arguments[1]);  // create a matcher that will match the given URI against the pattern
+            uriMatcher.find(); // apply the Matcher to the URI and extract the host and file path groups
+            // save found groups in their respective variables
+            this.host = uriMatcher.group(2);
+            this.path = uriMatcher.group(9) == null ? "/" : uriMatcher.group(9);
+            this.hostDir = uriMatcher.group(7) == null ? "localhost" : uriMatcher.group(7);
+
+            this.port = arguments.length > 2 ? arguments[2] : "80"; // if port is given save it to its respective variable
+            this.lang = arguments.length > 3 ? arguments[3] : "en"; // same for language
+        }
+
+        else {
+            this.argumentsCorrect = false;
+        }
+    }
+
+    /*
+    Creates a socket object and connects with the host on the given port, both saved in the attributes of this object
+     */
+    public void connectSocket() throws IOException {
+        if ( clientSocket == null || !clientSocket.getInetAddress().getHostName().equals(host)) {
+            this.clientSocket = new Socket(this.host, Integer.parseInt(this.port)); // open a socket with the host
+            this.outToServer = new DataOutputStream(clientSocket.getOutputStream()); // initialize output stream object
+            this.bytesFromServer = new BufferedInputStream(clientSocket.getInputStream()); // initialize input stream object
+        }
+    }
+
+    /*
+   Sends the given command to the server in the form of HTTP request.
+   Only used for POST and PUT requests
+    */
+    public void sendRequest () throws IOException {
+        String headers1 = this.HTTPCommand + " " + this.path + " HTTP/1.1\r\n" +
+                "host:  " + this.host + "\r\n";
+        String headers2 = "\r\n";
+
+        if (HTTPCommand.equals("POST") || HTTPCommand.equals("PUT")) {
+            String body = getUserBody();
+            int bodySize = body.getBytes().length;
+            headers2 = "Content-Length: " + bodySize + "\r\n" +
+                    "\r\n";
+        }
+        this.outToServer.writeBytes(headers1 + headers2);
+
+    }
 
     /*
     Reads the headers of the incoming http response
      */
     public void readHeaders() throws IOException{
         // initialize starting values
+        HashMap <String, String> headers = new HashMap<String, String>();
         this.encoding = "";
         this.buffer = new byte[0];
         this.bytesToRead = 0;
         String line; // initialize string where current line from the response is saved
 
-        while (true) {
+        // \r\n line indicated the end of headers and we break the loop
+        do {
             line = readLine(bytesFromServer); // read input from server
+            if (line.contains(":")) {
+                String[] splitLine = line.split(":");
+                headers.put(splitLine[0], splitLine[1]);
+            } else{
+                headers.put("response-code", line);
+            }
             System.out.print(line);
+        } while (!line.equals("\r\n"));
 
-            // if encoding hasn't been specified yet, check if this line is specifying it and indeed yes, change the encoding argument to the correct encoding
-            if (this.encoding.equals("")) {
-                if (line.contains("Transfer-Encoding: chunked")) {
-                    this.encoding = "Transfer-Encoding";
-                } else if (line.contains("Content-Length")) {
-                    this.encoding = "Content-Length";
-                    String bytes = line.split(" ")[1];
-                    this.bytesToRead = Integer.parseInt(bytes.substring(0, bytes.length()-2)); //convert the string specifying number of bytes to integer, drop the last two chars which are \r\n
-                    this.buffer = new byte[this.bytesToRead]; // immediately make the buffer array since the number of bytes is already specified
-                }
-            }
-
-            if (line.contains("Content-Type")){
-                if (line.contains("text/html")){
-                    this.contentType = "html";
-                }
-                else if (line.contains("image")){
-                    this.contentType = "img";
-                }
-            }
-
-            if (line.equals("\r\n")) { // \r\n line indicated the end of headers and we break the loop
-                break;
-            }
+       if (headers.get("Transfer-Encoding") != null){
+           this.encoding = "Transfer-Encoding";
+        } else {
+            this.encoding = "Content-Length";
+            String bytes = headers.get("Content-Length").replace(" ", "");
+            this.bytesToRead = Integer.parseInt(bytes.substring(0, bytes.length() - 2)); //convert the string specifying number of bytes to integer, drop the last two chars which are \r\n
+            this.buffer = new byte[this.bytesToRead]; // immediately make the buffer array since the number of bytes is already specified
         }
+
+        String[] content =  headers.get("Content-Type").split("/");
+        String contentType = content[0].replace(" ", "");
+        int endIndex = content[1].contains(";") ? content[1].indexOf(";") : content[1].length()-1;
+        String fileFormat = content[1].substring(0, endIndex);
+        this.contentType = contentType;
+
+        incomingFilePath = path.contains(".") ? websiteDir + File.separator + hostDir + path : websiteDir + File.separator + hostDir + File.separator + "file."+fileFormat;
+        createFile(incomingFilePath);
+        this.bw = new BufferedWriter(new FileWriter(incomingFilePath));
+        this.ibw = new BufferedOutputStream(new FileOutputStream(incomingFilePath));
     }
 
 
@@ -273,7 +274,7 @@ class Client  {
         if (this.encoding.equals("Content-Length")) {
             this.buffer = readBytes(this.bytesFromServer, this.bytesToRead); // if encoding is of content-length type, read the correct amount of bytes in the buffer
 
-            if (this.contentType.equals("img")){ // if the body is an img, we have to use the BufferedOutputStream instead of a BufferedWriter
+            if (this.contentType.equals("image")){ // if the body is an img, we have to use the BufferedOutputStream instead of a BufferedWriter
                 ibw.write(buffer);
                 ibw.flush();
             } else { // for html we use BufferedWriter
@@ -311,35 +312,27 @@ class Client  {
             }
         }
         bw.flush(); // flush the buffer at the end of the loop to effectively write to the file
-    }
-
-
-    /*
-    Read the the given file and return the string with the content
-     */
-    public String readFile(String fileName) throws IOException{
-        BufferedReader reader = new BufferedReader(new InputStreamReader( new FileInputStream(fileName))); // encapsulate the FileInputStream with a BufferedReader
-        String strLine;
-        String fileText = "";
-        while ( (strLine = reader.readLine()) != null){ // while there is something to read, read new line from the file
-            fileText += strLine + "\r\n";
+        if (contentType.equals("text")){
+            getImgs();
         }
-        return fileText; // return the string with content
     }
+
+
 
 
     /*
     Parse the html file, download all the images and change their src attribute in the html file to the local path of the downloaded image
      */
     public void getImgs() throws IOException{
+        String htmlFilePath = incomingFilePath;
 
-        String websiteDir = Paths.get("websites").toAbsolutePath().normalize().toString(); // path to the website dir
+        String currentDir = Paths.get(".").toAbsolutePath().normalize().toString(); // path to the website dir
 
         StringBuffer sb = new StringBuffer(); // string buffer which will contain the html file with the modified img src attributes
 
-        String htmlFileText = readFile(htmlFileRelativePath);
-        System.out.print(htmlFileText);
+        String htmlFileText = readFile(incomingFilePath);
         Matcher imgMatcher = imgPatternRegex.matcher(htmlFileText);  // create a matcher that will match the given URI against the pattern
+
         // apply the Matcher to the URI and extract the host and file path groups
         while(imgMatcher.find()){ // loop through all img tags in the html file
             path = imgMatcher.group(2); // extract the path to the img from the img tag
@@ -347,21 +340,18 @@ class Client  {
             String cleanPath = path.replaceAll("%20", ""); // cleanPath is the path without spaces
 
             this.HTTPCommand = "GET";
-            String imgFilePath = websiteDir + File.separator + htmlFilename + cleanPath; // absolute path of the image
-            createFile(imgFilePath); // create the image file
-            this.ibw = new BufferedOutputStream(new FileOutputStream(imgFilePath)); // create a BufferedOutputStream to the newly created img file
 
             sendRequest(); // send the GET request to download the image
             readHeaders(); // read the response headers
             readBody(); // read the body, a.k.a. download the actual image bytes
 
-            imgMatcher.appendReplacement(sb, "$1" + websiteDir + File.separator + htmlFilename + cleanPath + "$3"); // add the absolute path of the local website dir to the src attribute
+            imgMatcher.appendReplacement(sb, "$1" + currentDir + File.separator + websiteDir + File.separator + hostDir + File.separator + path + "$3"); // add the absolute path of the local website dir to the src attribute
 
         }
-        imgMatcher.appendTail(sb); // add the remainder of the html file to the StringBuffer
+        imgMatcher.appendTail(sb); // add the remainder of the html file to the StringBufferabsoluteWebsiteDir
 
         // overwrite the html file with the adapted one from the sb
-        File file = new File(htmlFileRelativePath);
+        File file = new File(htmlFilePath);
         FileWriter fr = new FileWriter(file);
         fr.write(sb.toString());
         fr.flush();

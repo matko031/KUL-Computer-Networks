@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f1f8f214-f8fa-4520-9539-8cd1e180b172" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/websites/localhost/localhost.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websites/google/file.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websites/google/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websites/google/images/branding/googlelogo/1x/googlelogo_white_background_color_272x92dp.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websites/google/textinputassistant/tia.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websites/googlegoogle." afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Assignement1/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignement1/Client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Assignement1/Handler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignement1/Handler.class" afterDir="false" />
@@ -10,9 +14,25 @@
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Handler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/Content%20Overview/btn_contentovervup.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/readup.png" beforeDir="false" afterPath="$PROJECT_DIR$/websites/tcpipguide/images/readup.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/tcpipguide.html" beforeDir="false" afterPath="$PROJECT_DIR$/websites/tcpipguide/tcpipguide.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/google/google.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/localhost/localhost.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/ContentOverview/btn_contentovervup.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/FAQ/btn_upfaq.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/Samples/btn_upsamples.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/contactus/btn_cont_up.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/errata/btn_errataup.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/features/btn_featuresup.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/homepage/btn_uphome.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/news/btn_newsup.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/pricing_ordering/btn_pricingup.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/pricing_ordering/btn_upordernow.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/readup.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/testimonials/btn_uptestimo.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/title.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/toc/btn_uptoc.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/images/version_history/btn_vershistup.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/space.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/websites/tcpipguide/tcpipguide.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +69,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JAVA" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Antoine" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Astrid_code" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -142,11 +162,24 @@
       <workItem from="1584478355670" duration="1201000" />
       <workItem from="1584557861989" duration="9779000" />
       <workItem from="1584572807215" duration="34000" />
+      <workItem from="1584609890174" duration="11681000" />
+      <workItem from="1584645126800" duration="1134000" />
+      <workItem from="1584657153141" duration="3076000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
@@ -160,58 +193,58 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="408" y="91" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1584045747677" />
-    <state x="1044" y="4" key="#xdebugger.evaluate" timestamp="1584188899045">
+    <state x="1306" y="251" key="#xdebugger.evaluate" timestamp="1584660184912">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="1044" y="4" key="#xdebugger.evaluate/0.0.1920.1080@0.0.1920.1080" timestamp="1584188899045" />
-    <state x="702" y="215" key="FileChooserDialogImpl" timestamp="1584045755599">
+    <state x="1306" y="251" key="#xdebugger.evaluate/0.0.1920.1080@0.0.1920.1080" timestamp="1584660184912" />
+    <state x="700" y="191" key="FileChooserDialogImpl" timestamp="1584614222528">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="702" y="215" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1584045755599" />
-    <state width="1870" height="245" key="GridCell.Tab.0.bottom" timestamp="1584572763959">
+    <state x="700" y="191" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1584614222528" />
+    <state width="1870" height="298" key="GridCell.Tab.0.bottom" timestamp="1584660191730">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="245" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1584572763959" />
-    <state width="1870" height="245" key="GridCell.Tab.0.center" timestamp="1584572763959">
+    <state width="1870" height="298" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1584660191730" />
+    <state width="1870" height="298" key="GridCell.Tab.0.center" timestamp="1584660191730">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="245" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1584572763959" />
-    <state width="1870" height="245" key="GridCell.Tab.0.left" timestamp="1584572763959">
+    <state width="1870" height="298" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1584660191730" />
+    <state width="1870" height="298" key="GridCell.Tab.0.left" timestamp="1584660191729">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="245" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1584572763959" />
-    <state width="1870" height="245" key="GridCell.Tab.0.right" timestamp="1584572763959">
+    <state width="1870" height="298" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1584660191729" />
+    <state width="1870" height="298" key="GridCell.Tab.0.right" timestamp="1584660191730">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="245" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1584572763959" />
-    <state width="1870" height="298" key="GridCell.Tab.1.bottom" timestamp="1584572712769">
+    <state width="1870" height="298" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1584660191730" />
+    <state width="1870" height="298" key="GridCell.Tab.1.bottom" timestamp="1584660191731">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.1.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1584572712769" />
-    <state width="1870" height="298" key="GridCell.Tab.1.center" timestamp="1584572712768">
+    <state width="1870" height="298" key="GridCell.Tab.1.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1584660191731" />
+    <state width="1870" height="298" key="GridCell.Tab.1.center" timestamp="1584660191731">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.1.center/0.0.1920.1080@0.0.1920.1080" timestamp="1584572712768" />
-    <state width="1870" height="298" key="GridCell.Tab.1.left" timestamp="1584572712767">
+    <state width="1870" height="298" key="GridCell.Tab.1.center/0.0.1920.1080@0.0.1920.1080" timestamp="1584660191731" />
+    <state width="1870" height="298" key="GridCell.Tab.1.left" timestamp="1584660191731">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.1.left/0.0.1920.1080@0.0.1920.1080" timestamp="1584572712767" />
-    <state width="1870" height="298" key="GridCell.Tab.1.right" timestamp="1584572712768">
+    <state width="1870" height="298" key="GridCell.Tab.1.left/0.0.1920.1080@0.0.1920.1080" timestamp="1584660191731" />
+    <state width="1870" height="298" key="GridCell.Tab.1.right" timestamp="1584660191731">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1870" height="298" key="GridCell.Tab.1.right/0.0.1920.1080@0.0.1920.1080" timestamp="1584572712768" />
+    <state width="1870" height="298" key="GridCell.Tab.1.right/0.0.1920.1080@0.0.1920.1080" timestamp="1584660191731" />
     <state x="409" y="68" key="SettingsEditor" timestamp="1584041954248">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="409" y="68" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1584041954248" />
-    <state width="1085" height="528" key="XDebugger.FullValuePopup" timestamp="1584207965333">
+    <state width="1085" height="528" key="XDebugger.FullValuePopup" timestamp="1584659798736">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1085" height="528" key="XDebugger.FullValuePopup/0.0.1920.1080@0.0.1920.1080" timestamp="1584207965333" />
-    <state x="562" y="285" key="com.intellij.ide.util.TipDialog" timestamp="1584572813205">
+    <state width="1085" height="528" key="XDebugger.FullValuePopup/0.0.1920.1080@0.0.1920.1080" timestamp="1584659798736" />
+    <state x="556" y="213" key="com.intellij.ide.util.TipDialog" timestamp="1584657153719">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="562" y="285" key="com.intellij.ide.util.TipDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1584572813205" />
+    <state x="556" y="213" key="com.intellij.ide.util.TipDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1584657153719" />
     <state x="527" y="397" width="851" height="230" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1584190341203">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
@@ -229,14 +262,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main.java</url>
-          <line>8</line>
-          <option name="timeStamp" value="6" />
+          <url>file://$PROJECT_DIR$/src/Client.java</url>
+          <line>314</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Client.java</url>
-          <line>236</line>
-          <option name="timeStamp" value="7" />
+          <url>file://$PROJECT_DIR$/src/main.java</url>
+          <line>6</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main.java</url>
+          <line>4</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -116,8 +116,6 @@ class Handler implements Runnable {
         }
     }
 
-
-
     /*
     Reads the headers of the incoming http response
      */

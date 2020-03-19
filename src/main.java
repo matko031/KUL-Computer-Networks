@@ -8,7 +8,6 @@ public class main {
                 clientSocket.sendRequest();
                 clientSocket.readHeaders();
                 clientSocket.readBody();
-                clientSocket.getImgs();
             }
         }
     }
