@@ -1,4 +1,3 @@
-import org.jetbrains.annotations.NotNull;
 
 import javax.xml.crypto.Data;
 import java.util.*;
@@ -8,6 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.lang.*;
 import java.nio.file.Paths;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 
 class Client  {
 
@@ -94,9 +96,9 @@ class Client  {
         //String command = "GET www.google.com 80 en"; // used for debugging in order not to have to type the URI every time
         return command.split("\\s+"); // split user input on every space and return the array
     }
-/*
-    TODO put the description here
-     */
+    /*
+        TODO put the description here
+         */
     private String getUserBody() {
         System.out.println("Put your post body underneath:");
         Scanner scanner = new Scanner(System.in); // create scanner object
@@ -215,8 +217,10 @@ class Client  {
             String body = getUserBody();
             int bodySize = body.getBytes().length;
             headers2 = "Content-Length: " + bodySize + "\r\n" +
-                    "\r\n";
+                    "Content-Type: text/txt\r\n" +
+                    "\r\n" + body;
         }
+        System.out.print(headers1+headers2);
         this.outToServer.writeBytes(headers1 + headers2);
 
     }
@@ -244,8 +248,8 @@ class Client  {
             System.out.print(line);
         } while (!line.equals("\r\n"));
 
-       if (headers.get("Transfer-Encoding") != null){
-           this.encoding = "Transfer-Encoding";
+        if (headers.get("Transfer-Encoding") != null){
+            this.encoding = "Transfer-Encoding";
         } else {
             this.encoding = "Content-Length";
             String bytes = headers.get("Content-Length").replace(" ", "");
@@ -318,8 +322,6 @@ class Client  {
     }
 
 
-
-
     /*
     Parse the html file, download all the images and change their src attribute in the html file to the local path of the downloaded image
      */
@@ -345,7 +347,7 @@ class Client  {
             readHeaders(); // read the response headers
             readBody(); // read the body, a.k.a. download the actual image bytes
 
-            imgMatcher.appendReplacement(sb, "$1" + currentDir + File.separator + websiteDir + File.separator + hostDir + File.separator + path + "$3"); // add the absolute path of the local website dir to the src attribute
+            imgMatcher.appendReplacement(sb, "$1" + currentDir + File.separator + websiteDir + File.separator + hostDir + File.separator + cleanPath + "$3"); // add the absolute path of the local website dir to the src attribute
 
         }
         imgMatcher.appendTail(sb); // add the remainder of the html file to the StringBufferabsoluteWebsiteDir
@@ -355,6 +357,10 @@ class Client  {
         FileWriter fr = new FileWriter(file);
         fr.write(sb.toString());
         fr.flush();
+    }
+
+    public void translate() throws IOException{
+
     }
 }
 
