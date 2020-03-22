@@ -3,10 +3,11 @@ public class main {
         Client clientSocket = new Client();
         while (true) {
             HttpRequest req =clientSocket.newRequest();
-            clientSocket.connectSocket(req);
-            clientSocket.sendRequest(req);
-            clientSocket.handleResponse(req);
-            clientSocket.getImgs( "websites/"+req.getHostDir()+req.getPath(), req.getHost());
+            if (req.isArgumentsCorrect()) {
+                clientSocket.connectSocket(req);
+                clientSocket.sendRequest(req);
+                clientSocket.handleResponse(req);
+            }
         }
     }
 }

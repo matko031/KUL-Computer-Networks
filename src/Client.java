@@ -88,10 +88,14 @@ class Client  {
     void handleResponse(HttpRequest request) throws IOException {
         HttpResponse response = new HttpResponse(request, bytesFromServer);
         response.parseHeaders();
-        response.readBody();
-        response.saveResponse();
-        if (response.getContentType().equals("text")) {
-            System.out.println(new String(response.getBody()));
+        if (response.getResponseCode() == 200 && ! request.getHTTPCommand().equals("HEAD")) {
+            response.readBody();
+            response.saveResponse();
+            if (response.getContentType().equals("text")) {
+                System.out.println(new String(response.getBody()));
+                getImgs("websites/" + request.getHostDir() + request.getPath(), request.getHost());
+
+            }
         }
     }
 

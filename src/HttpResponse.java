@@ -106,7 +106,7 @@ public class HttpResponse {
         if (f.getParentFile() != null) { // checks if there is parent folder given in the filePath, e.g., 'foo/bar.png' would return true and 'bar.png' would not
             f.getParentFile().mkdirs(); // creates the parent dirs
         }
-        f.createNewFile(); // creates the file at the filePath location and returns whether or not it succeeded in doing so
+        boolean success = f.createNewFile(); // creates the file at the filePath location and returns whether or not it succeeded in doing so
     }
 
 
@@ -157,7 +157,7 @@ public class HttpResponse {
     void setEncoding(){
         if (headers.get("Transfer-Encoding") != null) {
             encoding = "Transfer-Encoding";
-        } else {
+        } else if (headers.get("Content-Length") != null) {
             encoding = "Content-Length";
             String bytes = headers.get("Content-Length").replace(" ", "").replace("\r\n", "");
             bytesToRead = Integer.parseInt(bytes); //convert the string specifying number of bytes to integer
@@ -165,11 +165,13 @@ public class HttpResponse {
     }
 
     void setContentType(){
-        String[] content = headers.get("Content-Type").split("/");
-        String contentType = content[0].replace(" ", "");
-        int endIndex = content[1].contains(";") ? content[1].indexOf(";") : content[1].indexOf("\r");
-        fileFormat = content[1].substring(0, endIndex);
-        this.contentType = contentType;
+        if (headers.get("Content-Type") != null) {
+            String[] content = headers.get("Content-Type").split("/");
+            String contentType = content[0].replace(" ", "");
+            int endIndex = content[1].contains(";") ? content[1].indexOf(";") : content[1].indexOf("\r");
+            fileFormat = content[1].substring(0, endIndex);
+            this.contentType = contentType;
+        }
     }
 
 
@@ -219,7 +221,7 @@ public class HttpResponse {
         String fullPath = request.getPath().contains(".") ? websiteDir + File.separator + request.getHostDir() + cleanPath : websiteDir + File.separator + request.getHostDir() + File.separator + "file." + fileFormat;
         createFile(fullPath);
 
-        if (contentType.equals("text")){
+        if (contentType.equals("text") && request.getLang() != null){
             body = translateBody().getBytes();
         }
 
@@ -227,26 +229,27 @@ public class HttpResponse {
         out.write(body);
         out.flush();
         out.close();
+        updateLastModified();
         }
 
     void updateLastModified() throws IOException {
         String filePath = "last-modified/" + request.getHost();
         createFile(filePath);
-        BufferedWriter writer  = new BufferedWriter(new FileWriter(filePath));
         String fileContent = readFile(filePath);
-        String regex = request.getPath()+":(.*?)$";
+        String regex = request.getPath()+";(.*?)\r\n";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(fileContent);
         String newText;
         if (matcher.find()){
             StringBuilder sb = new StringBuilder();
-            matcher.appendReplacement(sb, request.getPath() + ":" + getTime() + "\n");
+            matcher.appendReplacement(sb, request.getPath() + ";" + getTime() + "\n");
             matcher.appendTail(sb);
             newText = sb.toString();
         }
         else{
-            newText = request.getPath() + ":" + getTime() + "\n");
+            newText = fileContent + request.getPath() + ";" + getTime() + "\n";
         }
+        writeFile(filePath, newText);
 
     }
 

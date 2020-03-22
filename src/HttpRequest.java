@@ -1,6 +1,4 @@
-import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,6 +70,24 @@ public class HttpRequest {
         return body;
     }
 
+    boolean isArgumentsCorrect(){
+        return argumentsCorrect;
+    }
+
+    /*
+        Read the the given file and return the string with the content
+         */
+    String readFile(String fileName) throws IOException{
+        BufferedReader reader = new BufferedReader(new InputStreamReader( new FileInputStream(fileName))); // encapsulate the FileInputStream with a BufferedReader
+        String strLine;
+        StringBuilder fileText = new StringBuilder();
+        while ( (strLine = reader.readLine()) != null){ // while there is something to read, read new line from the file
+            fileText.append(strLine).append("\r\n");
+        }
+        return fileText.toString(); // return the string with content
+    }
+
+
     /*
     Takes in the list of arguments and check if they are all valid
     The order of arguments is HTTPCommand - URI - port - language
@@ -122,6 +138,23 @@ public class HttpRequest {
         return scanner.nextLine();  // read user input
     }
 
+    String getLastModified() throws IOException {
+        String filepath = "last-modified" + File.separator + getHost();
+        File file = new File(filepath);
+        if (file.exists()) {
+            String fileText = readFile(filepath);
+            if (fileText.contains(getPath())) {
+                String regex = getPath() + ";(.*?)\r\n";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(fileText);
+                matcher.find();
+                return matcher.group(1);
+            }
+        }
+        return "";
+
+    }
+
 
     /*
     Reads the arguments, checks them and saves them in their respective variables
@@ -138,7 +171,7 @@ public class HttpRequest {
             hostDir = uriMatcher.group(7) == null ? "localhost" : uriMatcher.group(7);
 
             this.port = arguments.length > 2 ? arguments[2] : "80"; // if port is given save it to its respective variable
-            this.lang = arguments.length > 3 ? arguments[3] : "en"; // same for language
+            this.lang = arguments.length > 3 ? arguments[3] : null; // same for language
 
             if (requiresBody.contains(HTTPCommand)){
                 body = getUserBody();
@@ -153,17 +186,22 @@ public class HttpRequest {
     }
 
 
-    public String constructRequest(){
+    public String constructRequest() throws IOException {
+        String lastModified = getLastModified();
+        String headers2 = lastModified.equals("") ? "" : "If-Modified-Since: " + lastModified + "\r\n";
+
         String headers1 = HTTPCommand + " " + path + " HTTP/1.1\r\n" +
-                "host:  " + host + "\r\n";
-        String headers2 = "\r\n";
+                "host:  " + host + "\r\n" +
+                headers2;
+
+        String headers3 = "\r\n";
 
         if (requiresBody.contains(HTTPCommand)) {
             int bodySize = body.getBytes().length;
-            headers2 = "Content-Length: " + bodySize + "\r\n" +
+            headers3 = "Content-Length: " + bodySize + "\r\n" +
                     "Content-Type: text/txt\r\n" +
                     "\r\n" + body;
         }
-        return headers1+headers2;
+        return headers1 + headers2 + headers3;
     }
 }
