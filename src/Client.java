@@ -1,5 +1,3 @@
-
-import javax.xml.crypto.Data;
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -7,8 +5,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.lang.*;
 import java.nio.file.Paths;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 
 class Client  {
@@ -35,7 +37,7 @@ class Client  {
     private String port; // port typed by the user, default value of 80
     private String path; // path to the file specified by the user
     private String hostDir;
-    private String incomingFilePath;
+    private String fullPath;
     private String lang; // language specified by the user, default en
     private String encoding = ""; // encoding specified in the http response headers
     private String contentType = ""; // content type specified in the response headers
@@ -43,6 +45,7 @@ class Client  {
     private int bytesToRead = 0; // number of bytes to read specified in the response
     public boolean argumentsCorrect = true; // specifies if all the arguments given by the user are correct
     String websiteDir = "websites";
+    public int responseCode;
 
 
 
@@ -165,6 +168,24 @@ class Client  {
     }
 
 
+    private void writeFile(String filename, String text) throws IOException {
+        // overwrite the html file with the adapted one from the sb
+        File file = new File(filename);
+        FileWriter fr = new FileWriter(file);
+        fr.write(text);
+        fr.flush();
+    }
+
+
+    private HttpURLConnection setupHttpURLConnection(String API_KEY, String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        con.setDoOutput(true);
+        return con;
+    }
+
 
     /************************** REAL STUFF **************************/
 
@@ -186,6 +207,7 @@ class Client  {
 
             this.port = arguments.length > 2 ? arguments[2] : "80"; // if port is given save it to its respective variable
             this.lang = arguments.length > 3 ? arguments[3] : "en"; // same for language
+            this.argumentsCorrect = true;
         }
 
         else {
@@ -242,11 +264,13 @@ class Client  {
             if (line.contains(":")) {
                 String[] splitLine = line.split(":");
                 headers.put(splitLine[0], splitLine[1]);
-            } else{
+            } else if (!line.equals("\r\n")){
                 headers.put("response-code", line);
             }
             System.out.print(line);
         } while (!line.equals("\r\n"));
+
+        responseCode = Integer.parseInt(headers.get("response-code").split(" ")[1]);
 
         if (headers.get("Transfer-Encoding") != null){
             this.encoding = "Transfer-Encoding";
@@ -259,14 +283,16 @@ class Client  {
 
         String[] content =  headers.get("Content-Type").split("/");
         String contentType = content[0].replace(" ", "");
-        int endIndex = content[1].contains(";") ? content[1].indexOf(";") : content[1].length()-1;
+        int endIndex = content[1].contains(";") ? content[1].indexOf(";") : content[1].indexOf("\r");
         String fileFormat = content[1].substring(0, endIndex);
         this.contentType = contentType;
-
-        incomingFilePath = path.contains(".") ? websiteDir + File.separator + hostDir + path : websiteDir + File.separator + hostDir + File.separator + "file."+fileFormat;
-        createFile(incomingFilePath);
-        this.bw = new BufferedWriter(new FileWriter(incomingFilePath));
-        this.ibw = new BufferedOutputStream(new FileOutputStream(incomingFilePath));
+        if (contentType.equals("text")){
+            String a = "abc";
+        }
+        fullPath = path.contains(".") ? websiteDir + File.separator + hostDir + path : websiteDir + File.separator + hostDir + File.separator + "file."+fileFormat;
+        createFile(fullPath);
+        this.bw = new BufferedWriter(new FileWriter(fullPath));
+        this.ibw = new BufferedOutputStream(new FileOutputStream(fullPath));
     }
 
 
@@ -326,13 +352,12 @@ class Client  {
     Parse the html file, download all the images and change their src attribute in the html file to the local path of the downloaded image
      */
     public void getImgs() throws IOException{
-        String htmlFilePath = incomingFilePath;
+        String htmlFilePath = fullPath;
+        String language = lang;
 
         String currentDir = Paths.get(".").toAbsolutePath().normalize().toString(); // path to the website dir
-
         StringBuffer sb = new StringBuffer(); // string buffer which will contain the html file with the modified img src attributes
-
-        String htmlFileText = readFile(incomingFilePath);
+        String htmlFileText = readFile(fullPath);
         Matcher imgMatcher = imgPatternRegex.matcher(htmlFileText);  // create a matcher that will match the given URI against the pattern
 
         // apply the Matcher to the URI and extract the host and file path groups
@@ -340,27 +365,71 @@ class Client  {
             path = imgMatcher.group(2); // extract the path to the img from the img tag
             path = String.valueOf(path.charAt(0)).equals("/") ? path : "/" + path;
             String cleanPath = path.replaceAll("%20", ""); // cleanPath is the path without spaces
-
             this.HTTPCommand = "GET";
 
-            sendRequest(); // send the GET request to download the image
-            readHeaders(); // read the response headers
-            readBody(); // read the body, a.k.a. download the actual image bytes
+            imgRequest i = new imgRequest(this);
+            Thread thread = new Thread(i);
+            thread.start();
 
             imgMatcher.appendReplacement(sb, "$1" + currentDir + File.separator + websiteDir + File.separator + hostDir + File.separator + cleanPath + "$3"); // add the absolute path of the local website dir to the src attribute
-
         }
+
+        fullPath = htmlFilePath;
+        lang = language;
+
         imgMatcher.appendTail(sb); // add the remainder of the html file to the StringBufferabsoluteWebsiteDir
 
         // overwrite the html file with the adapted one from the sb
-        File file = new File(htmlFilePath);
-        FileWriter fr = new FileWriter(file);
-        fr.write(sb.toString());
-        fr.flush();
+        writeFile(htmlFilePath, sb.toString());
     }
 
-    public void translate() throws IOException{
 
+
+    public void translateHtml() throws IOException {
+        System.out.println("Start translation");
+        String htmlText = readFile(fullPath);
+        Document doc = Jsoup.parse(htmlText);
+
+        ArrayList<String> elements= new ArrayList<String>();
+        for (Element child : doc.body().getAllElements()) {
+            if (!child.ownText().equals("")) {
+                elements.add(child.ownText());
+            }
+        }
+
+        String API_KEY = "trnsl.1.1.20200314T182311Z.d201cdaa9f1c8b73.d7dd33ae0a61a84c693f2b3911de8d09fd5da66e";
+        String url = "https://translate.yandex.net/api/v1.5/tr.json/translate?lang=" + lang + "&key=" + API_KEY;
+        HttpURLConnection con = setupHttpURLConnection(API_KEY, url);
+        OutputStream os = con.getOutputStream();
+
+        for (String e : elements ) {
+            String textToTranslate = "text=" + e + "&";
+            os.write((textToTranslate).getBytes());
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+        StringBuilder response = new StringBuilder();
+        String responseLine = null;
+        while ((responseLine = br.readLine()) != null) {
+            response.append(responseLine.trim());
+        }
+        con.disconnect();
+
+        String translation = response.toString();
+
+        JSONObject json = new JSONObject(translation);
+        JSONArray text = json.getJSONArray("text");
+
+        int index = 0;
+        for (Element child : doc.body().getAllElements()) {
+            if (!child.ownText().equals("")) {
+                child.text((String)text.get(index));
+                index++;
+            }
+        }
+        writeFile(fullPath, doc.toString());
+        System.out.println("end translation");
     }
 }
 

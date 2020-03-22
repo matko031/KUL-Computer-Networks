@@ -7,7 +7,11 @@ public class main {
                 clientSocket.connectSocket();
                 clientSocket.sendRequest();
                 clientSocket.readHeaders();
-                clientSocket.readBody();
+                if (clientSocket.responseCode == 200) {
+                    clientSocket.readBody();
+                    clientSocket.translateHtml();
+                }
+                //TODO if-modified-since part
             }
         }
     }

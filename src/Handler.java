@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 
@@ -18,7 +19,6 @@ class Handler implements Runnable {
     private String contentType;
     private String serverDir = "server";
     private String requestedFilePath;
-    private String htmlText;
 
 
     HashMap<String, String> responseCodes = new HashMap<String, String>() {{
@@ -35,7 +35,6 @@ class Handler implements Runnable {
         try {
             outToClient = new DataOutputStream(this.socket.getOutputStream());
             bytesFromClient = new BufferedInputStream(this.socket.getInputStream());
-            htmlText = readFile("my_website/home.html");
 
         } catch (IOException e){
             System.out.println("Error connecting with the client: " + e );
@@ -45,7 +44,7 @@ class Handler implements Runnable {
 
     /************************** UTILITIES **************************/
 
-  /*
+    /*
     Reads one line from the buffered reader. Implemented in spite of readline() method already existing
     due to the possible bugs and inconsistencies when using a combination of read() and readline() with BufferedReader
      */
@@ -91,8 +90,10 @@ class Handler implements Runnable {
         if(arguments.length != 3 || ! HTTPCommands.contains(arguments[0]) || ! arguments[2].equals("HTTP/1.1\r\n") ){
             return 400;
         }
-        else if( ( arguments[0].equals("GET") || arguments[0].equals("HEAD") ) && !(arguments[1].equals("/") || arguments[1].equals("/my_website/spaceodyssey.png") )){
-            return 404;
+        else if( ( arguments[0].equals("GET") || arguments[0].equals("HEAD"))){
+            File requestedFile = new File(arguments[1].substring(1));
+            if (! (arguments[1].equals("/") || requestedFile.exists()))
+                return 404;
         }
         return 200;
     }
@@ -113,25 +114,19 @@ class Handler implements Runnable {
     /*
         Read the the given file and return the string with the content
          */
-    public String readFile(String fileName) throws IOException{
-        BufferedReader reader = new BufferedReader(new InputStreamReader( new FileInputStream(fileName))); // encapsulate the FileInputStream with a BufferedReader
-        String strLine;
-        StringBuilder fileText = new StringBuilder();
-        while ( (strLine = reader.readLine()) != null){ // while there is something to read, read new line from the file
-            fileText.append(strLine).append("\r\n");
-        }
-        return fileText.toString(); // return the string with content
+    public byte[] readFile(String fileName) throws IOException{
+        BufferedInputStream imgStream = new BufferedInputStream(new FileInputStream(fileName));
+        File blob = new File("my_website/spaceodyssey.png");
+        int blobSize = (int) blob.length();
+        return readBytes(imgStream, blobSize);
     }
 
-
-    /*
-        Read the the given file and return the string with the content
-         */
-    public byte[] readImage(String fileName) throws IOException{
-        BufferedInputStream imgStream = new BufferedInputStream(new FileInputStream(fileName));
-        File img = new File("my_website/spaceodyssey.png");
-        int imgSize = (int) img.length();
-        return readBytes(imgStream, imgSize);
+    String getTime() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "EEE, dd MMM yyyy HH:mm:ss z", Locale.FRANCE);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return dateFormat.format(calendar.getTime());
     }
 
 
@@ -143,14 +138,17 @@ class Handler implements Runnable {
     public void readRequest() throws IOException{
         String request =  readLine(bytesFromClient);
         String[] arguments = request.split(" ");
-        System.out.print(request);
         responseCode = checkRequest(arguments);
         if (responseCode == 200){
             HTTPCommand = arguments[0];
             path = arguments[1].substring(1);
+            if (path.equals("")){
+                path = "my_website/home.html";
+            }
 
             if (HTTPCommand.equals("POST") || HTTPCommand.equals("PUT")){
                 createFile(serverDir + File.separator + path);
+                this.bw = new BufferedWriter(new FileWriter(serverDir + File.separator + path, HTTPCommand.equals("POST")));
             }
         }
         else{
@@ -162,7 +160,6 @@ class Handler implements Runnable {
     Reads the headers of the incoming http response
      */
     public void readHeaders() throws IOException{
-        // initialize starting values
         HashMap <String, String> headers = new HashMap<String, String>();
         this.encoding = "";
         this.buffer = new byte[0];
@@ -172,37 +169,21 @@ class Handler implements Runnable {
         // \r\n line indicated the end of headers and we break the loop
         do {
             line = readLine(bytesFromClient); // read input from server
-            System.out.print(line);
             if (line.contains(":")) {
                 String[] splitLine = line.split(":");
                 headers.put(splitLine[0], splitLine[1]);
             } else if (!line.equals("\r\n")){
-                headers.put("response-code", line);
+                headers.put("request", line);
             }
         } while (!line.equals("\r\n"));
 
-        if (headers.get("Transfer-Encoding") != null){
-            this.encoding = "Transfer-Encoding";
-        } else if (headers.get("Content-Length") != null) {
+        if (headers.get("Content-Length") != null) {
             this.encoding = "Content-Length";
             String bytes = headers.get("Content-Length").replace(" ", "");
             this.bytesToRead = Integer.parseInt(bytes.substring(0, bytes.length() - 2)); //convert the string specifying number of bytes to integer, drop the last two chars which are \r\n
             this.buffer = new byte[this.bytesToRead]; // immediately make the buffer array since the number of bytes is already specified
         }
-
-        if (headers.get("Content-Type") != null) {
-            String[] content = headers.get("Content-Type").split("/");
-            String contentType = content[0].replace(" ", "");
-            int endIndex = content[1].contains(";") ? content[1].indexOf(";") : content[1].length() - 1;
-            String fileFormat = content[1].substring(0, endIndex);
-            this.contentType = contentType;
-
-            requestedFilePath = serverDir + File.separator + path;
-            createFile(requestedFilePath);
-            this.bw = new BufferedWriter(new FileWriter(requestedFilePath));
-        }
     }
-
 
 
     /*
@@ -222,7 +203,6 @@ class Handler implements Runnable {
     private void processRequest() throws IOException{
         if ( HTTPCommand.equals("POST") || HTTPCommand.equals("PUT")) {
             String body = readBody();
-            bw = new BufferedWriter(new FileWriter(path, HTTPCommand.equals("POST")));
             bw.write(body); // write the body to the file
             bw.flush(); // flush the buffer at the end of the loop to effectively write to the file
             bw.close();
@@ -230,36 +210,45 @@ class Handler implements Runnable {
     }
 
     private void sendResponse() throws IOException{
-        outToClient.writeBytes("HTTP/1.1 " + responseCode + " " + responseCodes.get(String.valueOf(responseCode)+ "\r\n"));
+        String contentType = "text/html";
+
+        outToClient.writeBytes("HTTP/1.1 " + responseCode + " " + responseCodes.get(String.valueOf(responseCode))+ "\r\n" +
+                                   "Date: " + getTime() + "\r\n");
 
         if (responseCode == 200) {
             if ((HTTPCommand.equals("GET") || HTTPCommand.equals("HEAD"))) {
-                if (path.equals("/") || path.equals("")) {
-                    String htmlSize = String.valueOf(htmlText.length());
-                    outToClient.writeBytes("Content-Type: text/html\r\n" +
-                            "Content-Length: " + htmlSize + "\r\n" +
-                            "\r\n" +
-                            htmlText);
-                } else if (path.equals("my_website/spaceodyssey.png")) {
-                    File img = new File("my_website/spaceodyssey.png");
-                    String imgSize = String.valueOf(img.length());
-                    byte[] image = readImage("my_website/spaceodyssey.png");
-                    String htmlSize = String.valueOf(htmlText.length());
-                    outToClient.writeBytes("Content-Type: image/png\r\n" +
-                            "Content-Length: " + imgSize + "\r\n" +
+              if(new File(path).exists()){
+                    File requestedFile = new File(path);
+                    String fileSize = String.valueOf(requestedFile.length());
+                    byte[] file = readFile(path);
+                    if (path.contains(".png")){
+                        contentType = "image/png";
+                    }
+                    outToClient.writeBytes("Content-Type: " + contentType + "\r\n" +
+                            "Content-Length: " + fileSize + "\r\n" +
                             "\r\n");
-                    outToClient.write(image);
+                    outToClient.write(file);
                 }
             }
+            else{
+                String message = "Your request has been registered sucesfully\r\n";
+                outToClient.writeBytes("Content-Type: " + contentType + "\r\n" +
+                                        "Content-Length: " + message.length() + "\r\n" +
+                                        "\r\n"+
+                                        message);
+
+            }
         }
+
         else{
+            String error = responseCodes.get(String.valueOf(responseCode));
+            String response = "Error " + responseCode + ": " + error+ "\r\n";
             outToClient.writeBytes("Content-Type: text/html\r\n" +
-                    "Content-Length: 20" + "\r\n" +
+                    "Content-Length: " + response.length() + "\r\n" +
                     "\r\n" +
-                    "There was some error");
+                    response);
         }
     }
-
 
     @Override
     public void run() {
@@ -272,13 +261,13 @@ class Handler implements Runnable {
                     if (HTTPCommand.equals("POST") || HTTPCommand.equals("PUT")) {
                         processRequest();
                     }
+                    sendResponse();
                 }
-                sendResponse();
 
             }
 
             catch (IOException e){
-                System.out.println(e);
+                break;
             }
         }
     }
